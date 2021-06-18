@@ -6,7 +6,7 @@ var Product = require("../models/product")
 /* GET home page. */
 router.get('/', async function(req, res, next) {
   let products = await Product.find()
-  console.log(products)
+  console.log(req.session.user)
   res.render('products/list',{title: "Products in DB", products });
 });
 router.get('/add', async function(req, res, next) {
@@ -41,8 +41,21 @@ router.post('/edit/:id', async function(req, res, next) {
 
 router.get('/cart/:id', async function(req, res, next) {
   let product = await Product.findById(req.params.id)
-  console.log("Add this product in Cart")
+  let cart = []
+  if(req.cookies.cart) cart = req.cookies.cart
+  cart.push(product)
+  res.cookie("cart",cart)
+  
   res.redirect("/products")
+});
+
+
+router.get('/cart/remove/:id', async function(req, res, next) {
+  let cart = []
+  if(req.cookies.cart) cart = req.cookies.cart
+  cart.splice(cart.findIndex((c)=>c._id == req.params.id),1)
+  res.cookie("cart", cart)
+  res.redirect("/cart")
 });
 
 

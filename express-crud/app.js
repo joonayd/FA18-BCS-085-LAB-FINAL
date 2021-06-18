@@ -4,7 +4,7 @@ var express = require('express');
  var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var session = require("express-session")
 var indexRouter = require('./routes/index');
 var productsRouter = require('./routes/products');
 var usersRouter = require('./routes/users');
@@ -21,9 +21,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: 'dummytext',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 }
+}))
+
 app.use('/', indexRouter);
 app.use('/products', productsRouter);
-app.use('/users', usersRouter);
+app.use('/', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -42,6 +49,5 @@ app.use(function(err, req, res, next) {
 });
  
 mongoose.connect("mongodb://localhost/productscrud", { useNewUrlParser: true, useUnifiedTopology: true }).then(() => console.log("Connected to Mongo ....")).catch((error) => console.log(error.message));
-
 
 module.exports = app;

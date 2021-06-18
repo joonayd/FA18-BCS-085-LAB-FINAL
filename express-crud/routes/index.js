@@ -7,7 +7,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/cart', function(req, res, next) {
-  res.render("cart")
+  let cart = req.cookies.cart
+  if(!cart) cart = []
+
+  res.render("cart",{cart})
 });
 
 module.exports = router;
