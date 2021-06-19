@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Product = require("../models/product")
+var checkSessionAuth = require("../middlewares/checkSessionAuth")
 
 
 /* GET home page. */
@@ -9,7 +10,7 @@ router.get('/', async function(req, res, next) {
   console.log(req.session.user)
   res.render('products/list',{title: "Products in DB", products });
 });
-router.get('/add', async function(req, res, next) {
+router.get('/add',checkSessionAuth, async function(req, res, next) {
   res.render('products/add');
 
 });
